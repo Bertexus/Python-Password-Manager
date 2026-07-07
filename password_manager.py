@@ -19,10 +19,11 @@ def rot3(pw, shift):
 file_path = Path("Credentials.txt")
 
 # This function will store credentials and encrypt the password by calling the rot3 function
-def encrypt(username, password, shift):
+def encrypt(username, password, url, shift):
     data = {
-        "Username": username,
-        "Password": rot3(password, shift)
+        "Username": rot3(username, shift),
+        "Password": rot3(password, shift),
+        "URL": rot3(url, shift),
     }
 
     mode = "a" if file_path.is_file() else "w"
@@ -38,8 +39,9 @@ def decrypt():
         with open("Credentials.txt", "r") as file:
             for conts in file:
                 data = json.loads(conts)
-                print(f"Username: {data["Username"]}")
+                print(f"Username: {rot3(data["Username"], -3)}")
                 print(f"Password: {rot3(data["Password"], -3)}" )
+                print(f"URL: {rot3(data["URL"], -3)}" )
                 print("-" * 20)
     except FileNotFoundError:
         print("The file does not exist. Please check the file path.")
@@ -48,7 +50,7 @@ def decrypt():
 def menu():
     while True:
         print("Please select an option: \n")
-        print("[1] Add Credentials (Username and Password)")
+        print("[1] Add Credentials (Username, Password, and URL)")
         print("[2] Read All Credentials")
         print("[3] Terminate Program")
 
@@ -61,7 +63,8 @@ def menu():
             case "1":
                 username = input("Please enter Username: ")
                 password = input("Please enter Password: ")
-                encrypt(username, password, 3)
+                url = input("Please enter URL: ")
+                encrypt(username, password, url, 3)
             
             # Case 2 will call decrypt function to decrypt password and display data
             case "2":
